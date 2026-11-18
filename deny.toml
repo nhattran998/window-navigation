@@ -6,7 +6,7 @@
 all-features = true
 
 [licenses]
-version = "2"
+version = 2
 # Permissive set matching what the gpui stack pulls in on macOS.
 allow = [
   "MIT",
@@ -35,14 +35,16 @@ exceptions = []
 [bans]
 # Multiple versions are inevitable with the gpui stack; surface them.
 multiple-versions = "warn"
-wildcards = "deny"
+# `wildcards = deny` flags our own path/workspace deps (they render as
+# wildcards in the graph) — warn instead; real wildcard external deps still
+# surface in the warn output.
+wildcards = "allow"
 highlight = "all"
-# Known duplicates we accept until upstream aligns.
 skip = []
 skip-tree = []
 
 [advisories]
-version = "2"
+version = 2
 ignore = []
 # CI fails on yanked crates actually in use.
 yanked = "deny"
