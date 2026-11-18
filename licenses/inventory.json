@@ -1,0 +1,71 @@
+{
+  "_comment": "Vendored/direct third-party components. Cargo.lock transitive deps are audited by cargo-deny (deny.toml) and expanded into THIRD-PARTY-NOTICES by scripts/licenses/generate-notices.sh.",
+  "inputs": [
+    "Cargo.lock",
+    "Cargo.toml",
+    "vendor/gpui-kit/Cargo.toml",
+    "vendor/gpui-pre/Cargo.toml"
+  ],
+  "components": [
+    {
+      "name": "gpui-kit",
+      "license": "Apache-2.0",
+      "version": "0.10.0",
+      "url": "https://github.com/longbridge/gpui-kit",
+      "purpose": "UI components on GPUI (kit, base, component, assets, macros).",
+      "files": [
+        "licenses/Apache-2.0-gpui-kit.txt"
+      ]
+    },
+    {
+      "name": "gpui-pre",
+      "license": "Apache-2.0",
+      "version": "0.3.12",
+      "url": "https://crates.io/crates/gpui-pre",
+      "purpose": "GPUI core snapshot.",
+      "files": [
+        "licenses/Apache-2.0-gpui-pre.txt"
+      ]
+    },
+    {
+      "name": "gpui-pre-platform",
+      "license": "Apache-2.0",
+      "version": "0.3.12",
+      "url": "https://crates.io/crates/gpui-pre-platform",
+      "purpose": "GPUI platform layer.",
+      "files": [
+        "licenses/Apache-2.0-gpui-pre-platform.txt"
+      ]
+    },
+    {
+      "name": "gpui-pre-macos",
+      "license": "Apache-2.0",
+      "version": "0.3.12",
+      "url": "https://crates.io/crates/gpui-pre-macos",
+      "purpose": "GPUI macOS backend (Metal, AppKit).",
+      "files": [
+        "licenses/Apache-2.0-gpui-pre-macos.txt"
+      ]
+    },
+    {
+      "name": "gpui-pre-apple",
+      "license": "Apache-2.0",
+      "version": "0.3.12",
+      "url": "https://crates.io/crates/gpui-pre-apple",
+      "purpose": "GPUI shared Apple platform code.",
+      "files": [
+        "licenses/Apache-2.0-gpui-pre-apple.txt"
+      ]
+    },
+    {
+      "name": "Lucide icons",
+      "license": "ISC",
+      "version": "0.10.0",
+      "url": "https://lucide.dev",
+      "purpose": "Default icon set shipped by gpui-kit assets.",
+      "files": [
+        "licenses/ISC-Lucide.txt"
+      ]
+    }
+  ]
+}

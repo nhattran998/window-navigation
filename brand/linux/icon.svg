@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!--
+    Linux variant: circular plate (GNOME/KDE hicolor convention), same motif.
+  -->
+  <circle cx="256" cy="256" r="224" fill="#1f1f1f"/>
+  <rect x="128" y="160" width="256" height="192" rx="18" fill="none" stroke="#5a5a5e" stroke-width="11"/>
+  <rect x="142" y="174" width="112" height="164" rx="12" fill="#3584e4"/>
+  <rect x="266" y="174" width="104" height="164" rx="12" fill="#454548"/>
+  <path d="M 318 256 h 36 m 0 0 l -12 -12 m 12 12 l -12 12" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

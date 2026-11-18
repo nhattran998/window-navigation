@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!--
+    Windows variant: flat tile, no rounded squircle (Windows 11 style keeps a
+    subtle 48px radius), same snap-a-window motif. Export .ico sizes
+    16/24/32/48/64/128/256 via scripts/release/export-brand.sh.
+  -->
+  <rect x="48" y="48" width="416" height="416" rx="48" fill="#202020"/>
+  <rect x="112" y="128" width="288" height="256" rx="16" fill="none" stroke="#606062" stroke-width="12"/>
+  <rect x="128" y="144" width="126" height="224" rx="10" fill="#0078d4"/>
+  <rect x="266" y="144" width="118" height="224" rx="10" fill="#4b4b4d"/>
+  <path d="M 325 256 h 38 m 0 0 l -13 -13 m 13 13 l -13 13" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
