@@ -26,6 +26,7 @@ allow = [
   "OFL-1.1",
   "CDLA-Permissive-2.0",
   "bzip2-1.0.6",
+  "0BSD",
 ]
 # Trust the dependency roots fully.
 confidence-threshold = 0.8
@@ -45,7 +46,21 @@ skip-tree = []
 
 [advisories]
 version = 2
-ignore = []
+# Unmaintained (not vulnerable) transitive deps pulled by the vendored gpui
+# stack; revisit when upstream replaces them.
+# "Unmaintained" (not vulnerable) transitive deps of the vendored gpui stack.
+# Advisory IDs enumerated from `cargo deny check advisories` on 2026-11-18.
+ignore = [
+  { id = "RUSTSEC-2024-0384", reason = "unmaintained; transitive via gpui stack" },
+  { id = "RUSTSEC-2024-0436", reason = "unmaintained/archived; transitive macro dep, no runtime risk" },
+  { id = "RUSTSEC-2025-0134", reason = "unmaintained; superseded by rustls-pki-types" },
+  { id = "RUSTSEC-2026-0192", reason = "unmaintained; transitive via gpui text stack" },
+  { id = "RUSTSEC-2026-0206", reason = "unmaintained; transitive via gpui text shaping" },
+  { id = "RUSTSEC-2026-0370", reason = "unmaintained; transitive via gpui Linux DBus" },
+  { id = "RUSTSEC-2026-0371", reason = "unmaintained; transitive via gpui Linux DBus" },
+  { id = "RUSTSEC-2026-0372", reason = "unmaintained; transitive via gpui Linux DBus" },
+  { id = "RUSTSEC-2026-0543", reason = "unmaintained; transitive via gpui stack" },
+]
 # CI fails on yanked crates actually in use.
 yanked = "deny"
 
