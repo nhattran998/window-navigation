@@ -11,13 +11,18 @@
     clippy::ptr_arg
 )]
 
+#[cfg(target_os = "macos")]
 pub mod ax;
+#[cfg(target_os = "macos")]
 pub mod hotkeys;
+#[cfg(target_os = "macos")]
 pub mod screens;
+#[cfg(target_os = "macos")]
 pub mod windows;
 
-/// Debug exports (used by probe/tests).
+#[cfg(target_os = "macos")]
 pub use screens::screens;
+#[cfg(target_os = "macos")]
 pub use windows::{
     all_windows, app_name, apply_rect, frontmost_window, is_trusted, is_trusted_prompting,
     list_windows, on_screen_pids, resolve_window, windows_of_pid, AxWindow, TargetResolution,

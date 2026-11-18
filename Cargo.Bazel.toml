@@ -1,19 +1,19 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/wnav-core",
-    "crates/wnav-macos",
-    "crates/wnav",
-    "crates/wnav-app",
+  "crates/wnav-core",
+  "crates/wnav-macos",
+  "crates/wnav",
+  "crates/wnav-app",
 ]
 # Vendored trees carry their own workspace roots; excluded so our lints and
 # lockfile don't absorb them.
 exclude = [
-    "vendor/gpui-kit",
-    "vendor/gpui-pre",
-    "vendor/gpui-pre-platform",
-    "vendor/gpui-pre-macos",
-    "vendor/gpui-pre-apple",
+  "vendor/gpui-kit",
+  "vendor/gpui-pre",
+  "vendor/gpui-pre-platform",
+  "vendor/gpui-pre-macos",
+  "vendor/gpui-pre-apple",
 ]
 
 [workspace.package]
@@ -64,8 +64,8 @@ unused_import_braces = "deny"
 unused_lifetimes = "deny"
 unused_macro_rules = "deny"
 unused_qualifications = "deny"
-unused_results = "allow" # UI/FFI code returns values we often ignore by design
-variant_size_differences = "allow" # FFI enums get noisy
+unused_results = "allow"               # UI/FFI code returns values we often ignore by design
+variant_size_differences = "allow"     # FFI enums get noisy
 
 [workspace.lints.clippy]
 # Correctness: hard errors.
@@ -91,14 +91,14 @@ integer_division = "deny"
 lossy_float_literal = "deny"
 mem_forget = "deny"
 missing_assert_message = "deny"
-missing_docs_in_private_items = "allow" # docs coverage comes from rust::missing_docs
+missing_docs_in_private_items = "allow"    # docs coverage comes from rust::missing_docs
 mixed_read_write_in_expression = "deny"
 mutex_integer = "deny"
 needless_raw_strings = "deny"
 neg_multiply = "deny"
 pathbuf_init_then_push = "deny"
-print_stderr = "allow" # wnav CLI stderr contract + app diagnostics
-print_stdout = "allow" # wnav CLI stdout is the machine channel (SRS 2.4)
+print_stderr = "allow"                     # wnav CLI stderr contract + app diagnostics
+print_stdout = "allow"                     # wnav CLI stdout is the machine channel (SRS 2.4)
 rc_buffer = "deny"
 rc_mutex = "deny"
 rest_pat_in_fully_bound_structs = "deny"
@@ -110,7 +110,7 @@ string_slice = "deny"
 suspicious_xor_used_as_pow = "deny"
 tests_outside_test_module = "deny"
 todo = "deny"
-too_many_arguments = "allow" # AX/FFI calls are wide by nature
+too_many_arguments = "allow"               # AX/FFI calls are wide by nature
 too_many_lines = "allow"
 unwrap_used = "deny"
 verbose_file_reads = "deny"

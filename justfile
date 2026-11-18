@@ -65,7 +65,7 @@ fmt:
 run *ARGS:
     cargo run -p wnav -- {{ARGS}}
 
-# Run the menu-bar app (debug build).
+# Run the menu-bar app (debug build; macOS only in v1).
 app:
     cargo run -p wnav-app
 

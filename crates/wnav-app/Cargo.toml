@@ -8,22 +8,24 @@ repository.workspace = true
 keywords = ["window", "macos", "gui", "shortcuts"]
 categories = ["gui", "os"]
 
+# The app binary is macOS-only in v1 (PRD OOS-4): gpui + global hotkeys + AX.
+# Its dependencies are macOS-gated below, so on linux/windows `cargo build
+# -p wnav-app` produces an empty bin target instead of failing the workspace.
 [[bin]]
 name = "wnav-app"
 path = "src/main.rs"
 
-[features]
-default = []
-
 [dependencies]
 wnav-core = { workspace = true, features = ["schemars"] }
-wnav-macos = { workspace = true }
+serde = { workspace = true }
+schemars = "1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
 gpui-kit = { workspace = true }
 global-hotkey = { workspace = true }
 crossbeam-channel = { workspace = true }
 toml_edit = { workspace = true }
-serde = { workspace = true }
-schemars = "1"
+wnav-macos = { workspace = true }
 
 [lints]
 workspace = true

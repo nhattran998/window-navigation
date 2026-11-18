@@ -12,13 +12,18 @@ categories = ["gui", "os"]
 name = "wnav"
 path = "src/main.rs"
 
-[dependencies]
+[target.'cfg(target_os = "macos")'.dependencies]
 wnav-core = { workspace = true }
 wnav-macos = { workspace = true }
 clap = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-objc2 = { workspace = true }
+
+[target.'cfg(not(target_os = "macos"))'.dependencies]
+wnav-core = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
 
 [lints]
 workspace = true

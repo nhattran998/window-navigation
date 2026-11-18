@@ -27,17 +27,17 @@ split_commits = false
 filter_unconventional = true
 filter_regex = ".*"
 commit_parsers = [
-    { message = "^feat", group = "New" },
-    { message = "^fix", group = "Fixed" },
-    { message = "^perf", group = "Performance" },
-    { message = "^doc", group = "Documentation" },
-    { message = "^refactor", group = "Changed" },
-    { message = "^style", group = "Style" },
-    { message = "^test", group = "Tests" },
-    { message = "^chore\\(release\\)", skip = true },
-    { message = "^chore\\(deps.*\\)", skip = true },
-    { message = "^chore|^ci", group = "Chore" },
-    { message = ".*", group = "Other" },
+  { message = "^feat", group = "New" },
+  { message = "^fix", group = "Fixed" },
+  { message = "^perf", group = "Performance" },
+  { message = "^doc", group = "Documentation" },
+  { message = "^refactor", group = "Changed" },
+  { message = "^style", group = "Style" },
+  { message = "^test", group = "Tests" },
+  { message = "^chore\\(release\\)", skip = true },
+  { message = "^chore\\(deps.*\\)", skip = true },
+  { message = "^chore|^ci", group = "Chore" },
+  { message = ".*", group = "Other" },
 ]
 protect_breaking_commits = false
 tag_pattern = "v[0-9].*"
