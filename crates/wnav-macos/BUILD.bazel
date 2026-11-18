@@ -1,0 +1,16 @@
+load("@rules_rust//rust:defs.bzl", "rust_library")
+
+rust_library(
+    visibility = ["//visibility:public"],
+    name = "wnav_macos",
+    srcs = glob(["src/**/*.rs"]),
+    edition = "2021",
+    deps = [
+        "//crates/wnav-core:wnav_core",
+        "@crates//:global-hotkey",
+        "@crates//:keyboard-types",
+        "@crates//:objc2",
+        "@crates//:objc2-app-kit",
+        "@crates//:objc2-foundation",
+    ],
+)

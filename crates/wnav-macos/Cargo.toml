@@ -1,0 +1,20 @@
+[package]
+name = "wnav-macos"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "macOS AX/CG/NSScreen backend for Wnav"
+repository.workspace = true
+keywords = ["window", "macos", "accessibility"]
+categories = ["gui", "os"]
+
+[dependencies]
+wnav-core = { workspace = true }
+objc2 = { workspace = true }
+objc2-foundation = { workspace = true }
+global-hotkey = { workspace = true }
+keyboard-types = { workspace = true }
+objc2-app-kit = { workspace = true }
+
+[lints]
+workspace = true
