@@ -1,0 +1,15 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary")
+
+rust_binary(
+    visibility = ["//visibility:public"],
+    name = "wnav",
+    srcs = ["src/main.rs", "src/output.rs"],
+    edition = "2021",
+    deps = [
+        "//crates/wnav-core:wnav_core",
+        "//crates/wnav-macos:wnav_macos",
+        "@crates//:clap",
+        "@crates//:serde",
+        "@crates//:serde_json",
+    ],
+)

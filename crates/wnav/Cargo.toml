@@ -1,0 +1,24 @@
+[package]
+name = "wnav"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Wnav CLI: navigate windows into grid positions"
+repository.workspace = true
+keywords = ["window", "macos", "cli", "shortcuts"]
+categories = ["gui", "os"]
+
+[[bin]]
+name = "wnav"
+path = "src/main.rs"
+
+[dependencies]
+wnav-core = { workspace = true }
+wnav-macos = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+objc2 = { workspace = true }
+
+[lints]
+workspace = true
