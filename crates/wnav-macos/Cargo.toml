@@ -8,7 +8,9 @@ repository.workspace = true
 keywords = ["window", "macos", "accessibility"]
 categories = ["gui", "os"]
 
-[dependencies]
+# All deps live under the macOS target table (see note below); this crate
+# has no target-independent code.
+[target.'cfg(target_os = "macos")'.dependencies]
 wnav-core = { workspace = true }
 objc2 = { workspace = true }
 objc2-foundation = { workspace = true }
