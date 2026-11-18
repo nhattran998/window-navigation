@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Pre-commit: format + lint everything that is about to be committed.
+# Non-zero exit blocks the commit.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+echo "githooks: rustfmt"
+cargo fmt --all
+
+echo "githooks: taplo fmt"
+if command -v taplo >/dev/null 2>&1; then
+    taplo fmt
+else
+    echo "githooks: taplo missing (cargo install taplo-cli) — skipping TOML format"
+fi
+
+echo "githooks: clippy -D warnings"
+cargo clippy --workspace --all-targets -- -D warnings
+
+echo "githooks: stage formatted files"
+git add -u
+
+echo "githooks: OK"

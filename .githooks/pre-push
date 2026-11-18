@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Pre-push: full CI parity. Nothing reaches GitHub without this passing.
+# Non-zero exit blocks the push.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+echo "githooks: cargo test"
+cargo test --workspace
+
+if command -v cargo-deny >/dev/null 2>&1; then
+    echo "githooks: cargo-deny"
+    cargo deny check
+else
+    echo "githooks: cargo-deny missing (cargo install cargo-deny) — skipping advisory check"
+fi
+
+if command -v bazel >/dev/null 2>&1; then
+    echo "githooks: bazel test"
+    bazel test //crates/wnav-core:wnav_core_test
+else
+    echo "githooks: bazel missing — skipping Bazel steps"
+fi
+
+echo "githooks: OK"

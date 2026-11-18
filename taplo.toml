@@ -1,0 +1,12 @@
+# taplo: TOML formatter/linter. Run: just fmt-toml / just lint-toml.
+
+include = ["**/*.toml"]
+exclude = ["target/**", "vendor/**", "**/node_modules/**"]
+
+[format]
+# 4-space indent, aligned like the rest of the repo.
+align-comments = true
+inline-array-attribute = false
+reorder-keys = true
+allowed-chars = [" ", "\t"]
+column-width = 100
