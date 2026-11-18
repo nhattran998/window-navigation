@@ -20,9 +20,11 @@ build-release:
 bazel-build:
     bazel build //crates/wnav //crates/wnav-app:wnav_app //crates/wnav-macos:wnav_macos
 
-# Regenerate Cargo.Bazel.lock after changing any Cargo.toml.
+# Regenerate Cargo.Bazel.lock after changing any Cargo.toml. The module
+# extension evaluates during the build itself; CARGO_BAZEL_REPIN=true makes
+# it re-run cargo instead of trusting the stale lock.
 bazel-repin:
-    CARGO_BAZEL_REPIN=true bazel run @crates//:crates_vendor
+    CARGO_BAZEL_REPIN=true bazel build //crates/wnav-core:wnav_core
 
 # ---- Test -------------------------------------------------------------
 

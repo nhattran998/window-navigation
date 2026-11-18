@@ -8097,7 +8097,6 @@ name = "wnav"
 version = "0.1.0"
 dependencies = [
  "clap",
- "objc2 0.6.5",
  "serde",
  "serde_json",
  "wnav-core",
