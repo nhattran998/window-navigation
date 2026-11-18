@@ -1,0 +1,18 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary")
+
+rust_binary(
+    visibility = ["//visibility:public"],
+    name = "wnav_app",
+    srcs = glob(["src/**/*.rs"]),
+    edition = "2021",
+    deps = [
+        "//crates/wnav-core:wnav_core",
+        "//crates/wnav-macos:wnav_macos",
+        "@crates//:crossbeam-channel",
+        "@crates//:global-hotkey",
+        "@crates//:gpui-kit",
+        "@crates//:schemars",
+        "@crates//:serde",
+        "@crates//:toml_edit",
+    ],
+)
