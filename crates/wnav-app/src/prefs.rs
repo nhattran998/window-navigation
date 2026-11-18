@@ -3,6 +3,7 @@
 //! Structure: fixed-size settings window, grouped rows, small-caps group
 //! headers, switches for booleans, per-row shortcut capture fields with an
 //! obvious way out (Esc). One accent, generous whitespace, zero decoration.
+#![cfg(target_os = "macos")]
 
 use gpui_kit::component::switch::Switch;
 use gpui_kit::component::ActiveTheme as _;

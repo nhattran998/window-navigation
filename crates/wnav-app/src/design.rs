@@ -2,6 +2,7 @@
 //! `settings.md`, `typography.md`). Semantic roles only — never hard-coded
 //! system colors; gpui-kit's theme supplies the platform palette and we layer
 //! layout constants on top.
+#![cfg(target_os = "macos")]
 
 /// Settings window metrics (HIG settings.md: fixed toolbar window, generous
 /// whitespace, two-level grouping).

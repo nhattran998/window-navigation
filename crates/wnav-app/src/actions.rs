@@ -1,4 +1,5 @@
 //! GPUI actions for wnav-app menu dispatch (namespace `wnav`).
+#![cfg(target_os = "macos")]
 
 // gpui-kit's macros expand to `::gpui::...` paths; the kit docs require the
 // app to alias its crate so those paths resolve (kit/src/lib.rs:94-117).

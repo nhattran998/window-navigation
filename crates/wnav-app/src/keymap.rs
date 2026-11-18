@@ -3,6 +3,7 @@
 //! The recorder captures a gpui `Keystroke` on key-down; we translate it into
 //! a wnav-core `Shortcut`, validate, persist to config.toml, and re-register
 //! hotkeys live (AC-F1-07).
+#![cfg(target_os = "macos")]
 
 use gpui_kit::gpui::{Keystroke, Modifiers};
 use wnav_core::shortcut::{Key, Shortcut};
