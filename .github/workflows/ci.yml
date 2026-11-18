@@ -1,0 +1,95 @@
+# Build, lint, test — every PR and push. release.yml handles publishing.
+#
+# Caches keyed on Cargo.lock; only main pushes save so PR runs can't evict.
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUST_TOOLCHAIN: "1.100.0"
+  CARGO_INCREMENTAL: "0"
+  CARGO_TERM_COLOR: always
+  # Bazelisk picks the Bazel version via .bazelversion if present, else latest.
+  USE_BAZEL_VERSION: 9.3.2
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          components: rustfmt, clippy
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deny@0.18.5,taplo@0.9.3
+      - name: rustfmt
+        run: cargo fmt --check
+      - name: taplo fmt --check
+        run: taplo fmt --check
+      - name: clippy -D warnings
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: cargo-deny
+        run: cargo deny check
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-15 } # arm64 — primary dev platform
+          - { os: ubuntu-latest }
+          - { os: windows-latest }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+      - uses: Swatinem/rust-cache@v2
+      - name: cargo test
+        run: cargo test --workspace
+      # wnav-core is the portable surface: it must build green on all three OSes.
+      # macOS additionally builds the AppKit backend.
+      - name: build (portable core + CLI)
+        run: cargo build -p wnav-core -p wnav
+      - name: build (macOS backend + app)
+        if: runner.os == 'macOS'
+        run: cargo build -p wnav-macos -p wnav-app
+
+  bazel:
+    # Bazel parity: rules_rust + crate_universe must stay green (AC-F1-10).
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: bazelbuild/setup-bazelisk@v3
+      - name: bazel disk cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/grid-bazel
+          key: bazel-${{ runner.os }}-${{ hashFiles('Cargo.Bazel.lock', 'MODULE.bazel') }}
+          restore-keys: bazel-${{ runner.os }}-
+      - name: bazel test (wnav-core)
+        run: bazel test //crates/wnav-core:wnav_core_test
+      - name: bazel build (all targets)
+        run: bazel build //crates/wnav //crates/wnav-app:wnav_app //crates/wnav-macos:wnav_macos
