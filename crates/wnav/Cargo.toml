@@ -8,19 +8,21 @@ repository.workspace = true
 keywords = ["window", "macos", "cli", "shortcuts"]
 categories = ["gui", "os"]
 
+# The CLI drives macOS AX today (PRD OOS-4 puts other platforms later), so
+# it declares required-features; non-macOS `cargo test --workspace` skips
+# compilation instead of failing on wnav-macos.
 [[bin]]
 name = "wnav"
 path = "src/main.rs"
+required-features = ["macos"]
+
+[features]
+default = []
+macos = ["dep:wnav-macos"]
 
 [target.'cfg(target_os = "macos")'.dependencies]
 wnav-core = { workspace = true }
-wnav-macos = { workspace = true }
-clap = { workspace = true }
-serde = { workspace = true }
-serde_json = { workspace = true }
-
-[target.'cfg(not(target_os = "macos"))'.dependencies]
-wnav-core = { workspace = true }
+wnav-macos = { workspace = true, optional = true }
 clap = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
