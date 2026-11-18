@@ -1,0 +1,11 @@
+# grid — Bazel defaults (macOS arm64 first; SRS §8)
+common --enable_platform_specific_config
+
+# Release opt by default; NFR-5/AC-F1-10: clean-clone one-command build.
+build --compilation_mode=opt
+
+# Keep Metal shader/proc-macro output readable on failures.
+build --verbose_failures
+
+# Local cache: keep builds warm across clean clones (safe to delete).
+build --disk_cache=~/.cache/grid-bazel

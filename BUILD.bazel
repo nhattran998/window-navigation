@@ -1,0 +1,7 @@
+# Root: exports workspace files crate_universe needs; targets live in crates/*.
+exports_files([
+    "Cargo.toml",
+    "Cargo.lock",
+    "Cargo.Bazel.lock",
+    "Cargo.Bazel.toml",
+])

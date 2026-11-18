@@ -1,0 +1,129 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/wnav-core",
+    "crates/wnav-macos",
+    "crates/wnav",
+    "crates/wnav-app",
+]
+# Vendored trees carry their own workspace roots; excluded so our lints and
+# lockfile don't absorb them.
+exclude = [
+    "vendor/gpui-kit",
+    "vendor/gpui-pre",
+    "vendor/gpui-pre-platform",
+    "vendor/gpui-pre-macos",
+    "vendor/gpui-pre-apple",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+# Vendored gpui stack: path-patched so we can fix upstream bugs without
+# waiting for releases. Versions must match vendor/*/Cargo.toml pins.
+#
+# NOTE: Bazel (crate_universe) resolves from the committed Cargo.Bazel.lock
+# and does not read this [patch] table — the lockfile keeps the registry
+# checksums. Cargo builds use the paths below.
+
+[workspace.dependencies]
+wnav-core = { path = "crates/wnav-core" }
+wnav-macos = { path = "crates/wnav-macos" }
+gpui-kit = "0.10.0"
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml_edit = "0.25"
+toml = "0.9"
+dirs = "7"
+global-hotkey = "0.7"
+keyboard-types = "0.7"
+crossbeam-channel = "0.5"
+clap = { version = "4", features = ["derive"] }
+objc2 = "0.6"
+objc2-foundation = "0.3"
+objc2-app-kit = "0.3"
+
+[workspace.lints.rust]
+# Strictest baseline: deny everything that catches real bugs.
+ambiguous_negative_literals = "deny"
+missing_debug_implementations = "warn"
+missing_docs = "warn"
+non_ascii_idents = "deny"
+redundant_imports = "deny"
+redundant_lifetimes = "deny"
+single_use_lifetimes = "deny"
+trivial_numeric_casts = "deny"
+unit_bindings = "deny"
+unqualified_local_imports = "deny"
+unreachable_pub = "deny"
+unsafe_attr_outside_unsafe = "deny"
+unused_import_braces = "deny"
+unused_lifetimes = "deny"
+unused_macro_rules = "deny"
+unused_qualifications = "deny"
+unused_results = "allow" # UI/FFI code returns values we often ignore by design
+variant_size_differences = "allow" # FFI enums get noisy
+
+[workspace.lints.clippy]
+# Correctness: hard errors.
+alloc_instead_of_core = "deny"
+approx_constant = "deny"
+as_ptr_cast_mut = "deny"
+cast_possible_truncation = "deny"
+cast_possible_wrap = "deny"
+cast_precision_loss = "deny"
+cast_sign_loss = "deny"
+clone_on_ref_ptr = "deny"
+dbg_macro = "deny"
+disallowed_script_idents = "deny"
+empty_drop = "deny"
+empty_enum_variants_with_brackets = "deny"
+exit = "deny"
+float_cmp = "deny"
+fmt_print_impl_display = "deny"
+get_unwrap = "deny"
+indexing_slicing = "deny"
+infinite_loop = "deny"
+integer_division = "deny"
+lossy_float_literal = "deny"
+mem_forget = "deny"
+missing_assert_message = "deny"
+missing_docs_in_private_items = "allow" # docs coverage comes from rust::missing_docs
+mixed_read_write_in_expression = "deny"
+mutex_integer = "deny"
+needless_raw_strings = "deny"
+neg_multiply = "deny"
+pathbuf_init_then_push = "deny"
+print_stderr = "allow" # wnav CLI stderr contract + app diagnostics
+print_stdout = "allow" # wnav CLI stdout is the machine channel (SRS 2.4)
+rc_buffer = "deny"
+rc_mutex = "deny"
+rest_pat_in_fully_bound_structs = "deny"
+same_name_method = "deny"
+self_named_module_files = "deny"
+semicolon_outside_block = "deny"
+string_lit_chars_any = "deny"
+string_slice = "deny"
+suspicious_xor_used_as_pow = "deny"
+tests_outside_test_module = "deny"
+todo = "deny"
+too_many_arguments = "allow" # AX/FFI calls are wide by nature
+too_many_lines = "allow"
+unwrap_used = "deny"
+verbose_file_reads = "deny"
+wildcard_enum_match_arm = "deny"
+
+# Pedantic: warn so real issues surface without blocking the build.
+pedantic = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+
+# Cargo-group noise we accept deliberately.
+multiple_crate_versions = "allow"
+doc_markdown = "allow"
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
