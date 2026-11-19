@@ -54,6 +54,9 @@ jobs:
           - { os: windows-latest, target: x86_64-pc-windows-msvc, wnav: true }
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
+    env:
+      # secrets context is not available in steps.if; mirror it via env.
+      APPLE_ID: ${{ secrets.APPLE_ID }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -69,7 +72,7 @@ jobs:
         if: matrix.app
         run: cargo build --release --locked -p wnav-app --target ${{ matrix.target }}
       - name: bundle wnav-app (macOS, default — no signing)
-        if: matrix.app && secrets.APPLE_ID == ''
+        if: matrix.app && env.APPLE_ID == ''
         env:
           CERT_B64: ${{ secrets.MACOS_CERTIFICATE_B64 }}
         run: |
@@ -82,7 +85,7 @@ jobs:
           bash scripts/release/bundle-macos.sh \
             "target/${{ matrix.target }}/release/wnav-app" "$version" dist-bundle
       - name: bundle + sign + notarize wnav-app (macOS)
-        if: matrix.app && secrets.APPLE_ID != ''
+        if: matrix.app && env.APPLE_ID != ''
         env:
           CERT_B64: ${{ secrets.MACOS_CERTIFICATE_B64 }}
           CERT_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
