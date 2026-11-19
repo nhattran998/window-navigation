@@ -68,7 +68,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: build wnav CLI
         if: matrix.cli
-        run: cargo build --release --locked -p wnav --target ${{ matrix.target }}
+        run: cargo build --release --locked -p wnav --features macos --target ${{ matrix.target }}
       - name: build wnav-app (macOS)
         if: matrix.app
         run: cargo build --release --locked -p wnav-app --target ${{ matrix.target }}
