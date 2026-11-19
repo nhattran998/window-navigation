@@ -5,6 +5,7 @@ edition.workspace = true
 license.workspace = true
 description = "Wnav menu-bar app: hotkeys, menus, preferences (gpui-kit)"
 repository.workspace = true
+readme.workspace = true
 keywords = ["window", "macos", "gui", "shortcuts"]
 categories = ["gui", "os"]
 

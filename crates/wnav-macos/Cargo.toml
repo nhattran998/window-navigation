@@ -5,6 +5,7 @@ edition.workspace = true
 license.workspace = true
 description = "macOS AX/CG/NSScreen backend for Wnav"
 repository.workspace = true
+readme.workspace = true
 keywords = ["window", "macos", "accessibility"]
 categories = ["gui", "os"]
 

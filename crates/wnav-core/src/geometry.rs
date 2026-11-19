@@ -274,12 +274,15 @@ fn clamp_into(r: Rect, v: &Rect) -> Rect {
 #[cfg(test)]
 mod tests {
     // Tests exercise panics directly; the production deny-set doesn't apply.
+    // float_cmp: gap-free tests assert exact shared edges — the whole point
+    // is that band math yields bit-identical coordinates, not approximates.
     #![allow(
         clippy::unwrap_used,
         clippy::indexing_slicing,
         clippy::wildcard_enum_match_arm,
         clippy::many_single_char_names,
-        clippy::map_unwrap_or
+        clippy::map_unwrap_or,
+        clippy::float_cmp
     )]
     use super::*;
 

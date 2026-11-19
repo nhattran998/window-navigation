@@ -21,6 +21,7 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/nhattran998/window-navigation"
+readme = "README.md"
 
 # Vendored gpui stack: path-patched so we can fix upstream bugs without
 # waiting for releases. Versions must match vendor/*/Cargo.toml pins.

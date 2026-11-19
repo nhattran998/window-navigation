@@ -5,6 +5,7 @@ edition.workspace = true
 license.workspace = true
 description = "Wnav CLI: navigate windows into grid positions"
 repository.workspace = true
+readme.workspace = true
 keywords = ["window", "macos", "cli", "shortcuts"]
 categories = ["gui", "os"]
 

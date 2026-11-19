@@ -50,6 +50,7 @@ jobs:
         include:
           - { os: macos-15, target: aarch64-apple-darwin, wnav: true, app: true }
           - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu, wnav: true }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, wnav: true }
           - { os: windows-latest, target: x86_64-pc-windows-msvc, wnav: true }
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
@@ -67,6 +68,36 @@ jobs:
       - name: build wnav-app (macOS)
         if: matrix.app
         run: cargo build --release --locked -p wnav-app --target ${{ matrix.target }}
+      - name: bundle wnav-app (macOS, default — no signing)
+        if: matrix.app && secrets.APPLE_ID == ''
+        env:
+          CERT_B64: ${{ secrets.MACOS_CERTIFICATE_B64 }}
+        run: |
+          brew install librsvg
+          if [ -n "$CERT_B64" ]; then
+            echo "$CERT_B64" | base64 --decode > cert.p12
+            echo "CERT_PATH=$PWD/cert.p12" >> "$GITHUB_ENV"
+          fi
+          version="${GITHUB_REF_NAME#v}"
+          bash scripts/release/bundle-macos.sh \
+            "target/${{ matrix.target }}/release/wnav-app" "$version" dist-bundle
+      - name: bundle + sign + notarize wnav-app (macOS)
+        if: matrix.app && secrets.APPLE_ID != ''
+        env:
+          CERT_B64: ${{ secrets.MACOS_CERTIFICATE_B64 }}
+          CERT_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_NOTARY_APP_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
+        run: |
+          brew install librsvg
+          echo "$CERT_B64" | base64 --decode > cert.p12
+          echo "CERT_PATH=$PWD/cert.p12" >> "$GITHUB_ENV"
+          version="${GITHUB_REF_NAME#v}"
+          bash scripts/release/bundle-macos.sh \
+            "target/${{ matrix.target }}/release/wnav-app" "$version" dist-bundle sign
       - name: stage artifacts
         shell: bash
         run: |
@@ -76,7 +107,7 @@ jobs:
             cp "target/${{ matrix.target }}/release/wnav" "$dir/" || \
             cp "target/${{ matrix.target }}/release/wnav.exe" "$dir/"
           if [ "${{ matrix.app }}" = "true" ]; then
-            cp "target/${{ matrix.target }}/release/wnav-app" "$dir/"
+            cp dist-bundle/*.dmg "$dir/"
           fi
           tar czf "$dir.tar.gz" "$dir"
           echo "ARTIFACT=$dir.tar.gz" >> "$GITHUB_ENV"
@@ -95,6 +126,8 @@ jobs:
         with:
           merge-multiple: true
           path: dist
+      - name: checksums
+        run: cd dist && shasum -a 256 * > checksums-sha256.txt
       - uses: softprops/action-gh-release@v2
         with:
           body: ${{ needs.extract-notes.outputs.notes }}
