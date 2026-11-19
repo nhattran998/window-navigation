@@ -28,7 +28,7 @@ jobs:
         run: |
           version="${GITHUB_REF_NAME#v}"
           # Pull this version's section out of CHANGELOG.md.
-          awk -v ver="[$version]" '
+          awk -v ver="$version" '
             $0 ~ "^## \\[" ver "\\]" {flag=1; next}
             /^## \[/ && flag {exit}
             flag {print}
@@ -48,10 +48,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: macos-15, target: aarch64-apple-darwin, wnav: true, app: true }
-          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu, wnav: true }
-          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, wnav: true }
-          - { os: windows-latest, target: x86_64-pc-windows-msvc, wnav: true }
+          # CLI + app are macOS-only until the v1.1 (Windows) / v1.2 (Linux)
+          # backends land (PRD OOS-4). Add matrix rows per platform as they
+          # ship, e.g. { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, cli: true }.
+          - { os: macos-15, target: aarch64-apple-darwin, cli: true, app: true }
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     env:
@@ -67,6 +67,7 @@ jobs:
           targets: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@v2
       - name: build wnav CLI
+        if: matrix.cli
         run: cargo build --release --locked -p wnav --target ${{ matrix.target }}
       - name: build wnav-app (macOS)
         if: matrix.app
@@ -106,9 +107,11 @@ jobs:
         run: |
           dir="wnav-${GITHUB_REF_NAME#v}-${{ matrix.target }}"
           mkdir -p "$dir"
-          cp "target/${{ matrix.target }}/release/wnav"[.exe] "$dir/" 2>/dev/null || \
-            cp "target/${{ matrix.target }}/release/wnav" "$dir/" || \
-            cp "target/${{ matrix.target }}/release/wnav.exe" "$dir/"
+          if [ "${{ matrix.cli }}" = "true" ]; then
+            cp "target/${{ matrix.target }}/release/wnav"[.exe] "$dir/" 2>/dev/null || \
+              cp "target/${{ matrix.target }}/release/wnav" "$dir/" || \
+              cp "target/${{ matrix.target }}/release/wnav.exe" "$dir/"
+          fi
           if [ "${{ matrix.app }}" = "true" ]; then
             cp dist-bundle/*.dmg "$dir/"
           fi
