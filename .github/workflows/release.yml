@@ -106,21 +106,22 @@ jobs:
         shell: bash
         run: |
           dir="wnav-${GITHUB_REF_NAME#v}-${{ matrix.target }}"
-          mkdir -p "$dir"
+          mkdir -p "$dir" out
           if [ "${{ matrix.cli }}" = "true" ]; then
             cp "target/${{ matrix.target }}/release/wnav"[.exe] "$dir/" 2>/dev/null || \
               cp "target/${{ matrix.target }}/release/wnav" "$dir/" || \
               cp "target/${{ matrix.target }}/release/wnav.exe" "$dir/"
           fi
+          tar czf "out/$dir.tar.gz" "$dir"
+          # The .dmg is a standalone release asset for GUI users; don't bury
+          # it inside the CLI tarball.
           if [ "${{ matrix.app }}" = "true" ]; then
-            cp dist-bundle/*.dmg "$dir/"
+            cp dist-bundle/*.dmg out/
           fi
-          tar czf "$dir.tar.gz" "$dir"
-          echo "ARTIFACT=$dir.tar.gz" >> "$GITHUB_ENV"
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}
-          path: ${{ env.ARTIFACT }}
+          path: out/*
           if-no-files-found: error
 
   publish:
