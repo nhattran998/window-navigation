@@ -20,6 +20,26 @@ const K_AX_SIZE_ATTRIBUTE: &str = "AXSize";
 const K_AX_TITLE_ATTRIBUTE: &str = "AXTitle";
 const K_AX_MINIMIZED_ATTRIBUTE: &str = "AXMinimized";
 const K_AX_RAISE_ACTION: &str = "AXRaise";
+const K_AX_SUBROLE_ATTRIBUTE: &str = "AXSubrole";
+/// Standard resizable window (`AXStandardWindow`); excludes popups/bubbles
+/// (e.g. Chromium overlays with `AXUnknown`), which must not be snapped.
+const K_AX_STANDARD_WINDOW_SUBROLE: &str = "AXStandardWindow";
+
+/// Whether an AX window element is a standard, snappable window.
+fn is_standard_window(el: AXUIElementRef) -> bool {
+    unsafe {
+        let mut out: CFTypeRef = ptr::null();
+        let name = cfstring(K_AX_SUBROLE_ATTRIBUTE);
+        let err = AXUIElementCopyAttributeValue(el, name, &mut out);
+        CFRelease(name);
+        if err != K_AX_ERROR_SUCCESS || out.is_null() {
+            return false;
+        }
+        let subrole = from_cfstring(out as CFStringRef).unwrap_or_default();
+        CFRelease(out);
+        subrole == K_AX_STANDARD_WINDOW_SUBROLE
+    }
+}
 
 /// Accessibility permission without prompting (CLI probe, FR-2/exit 4).
 pub fn is_trusted() -> bool {
@@ -148,19 +168,21 @@ pub unsafe fn set_frame(
     let pos_x = if pos_x == 0. { 0. } else { pos_x }; // normalize -0.0
     let pos_y = if pos_y == 0. { 0. } else { pos_y };
     unsafe {
-        let pname = cfstring(K_AX_POSITION_ATTRIBUTE);
-        let p = axvalue_point(pos_x, pos_y);
-        let err1 = AXUIElementSetAttributeValue(el, pname, p);
-        CFRelease(pname);
-        CFRelease(p);
+        // Size BEFORE position: Chromium/Electron windows re-anchor when
+        // resized after a move, dropping the new origin (w=900 stuck at x=0).
+        let sname = cfstring(K_AX_SIZE_ATTRIBUTE);
+        let s = axvalue_size(width, height);
+        let err1 = AXUIElementSetAttributeValue(el, sname, s);
+        CFRelease(sname);
+        CFRelease(s);
         if err1 != K_AX_ERROR_SUCCESS {
             return err1;
         }
-        let sname = cfstring(K_AX_SIZE_ATTRIBUTE);
-        let s = axvalue_size(width, height);
-        let err2 = AXUIElementSetAttributeValue(el, sname, s);
-        CFRelease(sname);
-        CFRelease(s);
+        let pname = cfstring(K_AX_POSITION_ATTRIBUTE);
+        let p = axvalue_point(pos_x, pos_y);
+        let err2 = AXUIElementSetAttributeValue(el, pname, p);
+        CFRelease(pname);
+        CFRelease(p);
         err2
     }
 }
@@ -411,20 +433,26 @@ pub fn frontmost_window() -> Option<AxWindow> {
         CFRelease(name);
         if err == K_AX_ERROR_SUCCESS && !out.is_null() {
             CFRelease(app_el);
-            return Some(AxWindow {
-                element: out as AXUIElementRef,
-                pid,
-            });
+            let el = out as AXUIElementRef;
+            if is_standard_window(el) {
+                return Some(AxWindow { element: el, pid });
+            }
+            CFRelease(out);
         }
 
+        // Fallback: first standard window of the app (skips popups/bubbles).
         let name = cfstring(K_AX_WINDOWS_ATTRIBUTE);
         let err = AXUIElementCopyAttributeValue(app_el, name, &mut out);
         CFRelease(name);
         CFRelease(app_el);
         if err == K_AX_ERROR_SUCCESS && !out.is_null() {
             let arr = out as CFArrayRef;
-            if CFArrayGetCount(arr) > 0 {
-                let el = CFArrayGetValueAtIndex(arr, 0) as AXUIElementRef;
+            let n = CFArrayGetCount(arr);
+            for i in 0..n {
+                let el = CFArrayGetValueAtIndex(arr, i) as AXUIElementRef;
+                if el.is_null() || !is_standard_window(el) {
+                    continue;
+                }
                 CFRetain(el as *const std::os::raw::c_void);
                 CFRelease(out);
                 return Some(AxWindow { element: el, pid });
