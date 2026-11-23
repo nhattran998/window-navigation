@@ -1,6 +1,13 @@
 # Changelog
 
 All notable changes to Wnav are documented here.
+## [Unreleased]
+
+### Fixed
+- **macos:** Set size before position and skip non-standard windows
+
+
+
 ## [0.1.2] - 2026-11-23
 
 ### Fixed
