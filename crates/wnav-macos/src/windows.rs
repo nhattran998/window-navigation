@@ -30,16 +30,18 @@ pub fn is_trusted() -> bool {
 pub fn is_trusted_prompting() -> bool {
     unsafe {
         let key = cfstring("AXTrustedCheckOptionPrompt");
+        let value = kCFBooleanTrue;
         let options = CFDictionaryCreate(
             ptr::null(),
             &key as *const CFStringRef as *const _,
-            &kCFBooleanTrue as *const *const _,
+            &value as *const CFTypeRef as *const _,
             1,
-            ptr::null(),
-            ptr::null(),
+            &kCFTypeDictionaryKeyCallBacks as *const _,
+            &kCFTypeDictionaryValueCallBacks as *const _,
         );
         let trusted = AXIsProcessTrustedWithOptions(options) != 0;
         CFRelease(options);
+        CFRelease(key as *const _);
         trusted
     }
 }
@@ -55,6 +57,11 @@ extern "C" {
         key_callbacks: *const std::os::raw::c_void,
         value_callbacks: *const std::os::raw::c_void,
     ) -> CFDictionaryRef;
+    /// Shared CFType callbacks — REQUIRED for CFDictionary (NULL makes HIServices crash).
+    #[allow(missing_docs)]
+    pub static kCFTypeDictionaryKeyCallBacks: std::os::raw::c_void;
+    #[allow(missing_docs)]
+    pub static kCFTypeDictionaryValueCallBacks: std::os::raw::c_void;
 }
 
 /// AXValue for AXPosition/AXSize set/get.
