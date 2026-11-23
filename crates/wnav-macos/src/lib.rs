@@ -18,7 +18,11 @@ pub mod hotkeys;
 #[cfg(target_os = "macos")]
 pub mod screens;
 #[cfg(target_os = "macos")]
+pub mod status_item;
+#[cfg(target_os = "macos")]
 pub mod windows;
+#[cfg(target_os = "macos")]
+pub use status_item::{StatusItem, StatusMenuEvent};
 
 #[cfg(target_os = "macos")]
 pub use screens::screens;

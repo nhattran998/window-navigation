@@ -9,6 +9,7 @@
 #![cfg(target_os = "macos")]
 
 use gpui_kit::assets::Assets;
+use objc2::MainThreadMarker;
 use std::time::Duration;
 
 use gpui_kit::gpui::{App, AsyncApp, KeyBinding, Menu, MenuItem};
@@ -19,6 +20,7 @@ use crate::actions::ApplyPreset;
 /// App-wide state (hotkey engine lifetime).
 struct WnavState {
     hotkeys: Option<wnav_macos::hotkeys::HotkeyEngine>,
+    status_item: Option<wnav_macos::StatusItem>,
 }
 impl gpui_kit::gpui::Global for WnavState {}
 
@@ -92,7 +94,14 @@ pub(crate) fn main() {
                 None
             }
         };
-        cx.set_global(WnavState { hotkeys });
+        // Menu-bar icon + menu (FR-6.1): an LSUIElement app is unreachable
+        // without it — `set_menus` only fills the never-shown app menu bar.
+        let status_item = MainThreadMarker::new().map(wnav_macos::StatusItem::new);
+
+        cx.set_global(WnavState {
+            hotkeys,
+            status_item,
+        });
 
         // Background poller: global-hotkey's crossbeam receiver → MAIN_TX.
         cx.background_executor()
@@ -115,6 +124,7 @@ pub(crate) fn main() {
         // Main-thread forwarder: non-blocking poll each frame via spawn; the
         // blocking recv() variant starves the runloop (bisected).
         cx.spawn(async move |cx: &mut AsyncApp| {
+            LazyLock::force(&MAIN_TX); // ensure MAIN_RX exists before reading it
             let Some(rx) = MAIN_RX.get() else { return };
             loop {
                 // Lock, drain one event, drop the guard BEFORE awaiting.
@@ -129,6 +139,27 @@ pub(crate) fn main() {
                     }
                     ev
                 };
+                // Status-menu picks: drain every tick (independent of hotkeys).
+                cx.update(|cx: &mut App| {
+                    let Some(item) = cx
+                        .try_global::<WnavState>()
+                        .and_then(|s| s.status_item.as_ref())
+                    else {
+                        return;
+                    };
+                    for ev in item.poll() {
+                        match ev {
+                            wnav_macos::StatusMenuEvent::Apply(id) => {
+                                cx.dispatch_action(&ApplyPreset(id));
+                            }
+                            wnav_macos::StatusMenuEvent::OpenPreferences => {
+                                cx.dispatch_action(&crate::actions::OpenPreferences);
+                            }
+                            wnav_macos::StatusMenuEvent::Quit => cx.quit(),
+                        }
+                    }
+                });
+
                 let Some(ev) = ev else { continue };
                 cx.update(|cx: &mut App| {
                     let Some(id) = cx
