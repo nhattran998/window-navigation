@@ -1,7 +1,7 @@
 # Changelog
 
 All notable changes to Wnav are documented here.
-## [Unreleased]
+## [0.1.2] - 2026-11-23
 
 ### Fixed
 - **app:** Add menu-bar status item and repair dead hotkey dispatch
