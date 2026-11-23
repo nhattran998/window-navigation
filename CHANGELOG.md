@@ -1,7 +1,14 @@
 # Changelog
 
 All notable changes to Wnav are documented here.
-## [0.1.0] - 2026-11-19
+## [Unreleased]
+
+### Fixed
+- **macos:** Pass CFType callbacks to CFDictionaryCreate in AX trust prompt
+
+
+
+## [0.1.0] - 2026-11-20
 
 ### Chore
 - **vendor:** Vendor gpui-kit 0.10.0 + gpui-pre 0.3.12 stack
@@ -27,6 +34,10 @@ All notable changes to Wnav are documented here.
 - **app:** Call stub main on non-macOS (cfg'd fn bodies)
 - **ci:** Cargo-deny schema + license list
 - **ci:** Cargo-deny integer versions, 0BSD allow, unmaintained ignores
+- **ci:** Secrets context not allowed in steps.if — mirror via job env
+- **ci:** Release notes regex + gate CLI artifacts to shipping platforms
+- **ci:** Build wnav CLI with macos feature (required-features gate)
+- **ci:** Ship dmg as standalone release asset, not inside CLI tarball
 
 
 
