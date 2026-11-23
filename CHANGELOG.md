@@ -1,7 +1,7 @@
 # Changelog
 
 All notable changes to Wnav are documented here.
-## [Unreleased]
+## [0.1.1] - 2026-11-23
 
 ### Fixed
 - **macos:** Pass CFType callbacks to CFDictionaryCreate in AX trust prompt
