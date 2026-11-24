@@ -1,7 +1,7 @@
 # Changelog
 
 All notable changes to Wnav are documented here.
-## [Unreleased]
+## [0.1.4] - 2026-11-24
 
 ### Fixed
 - **release:** Sign the ad-hoc bundle with an identifier-only requirement
