@@ -1,6 +1,18 @@
 # Changelog
 
 All notable changes to Wnav are documented here.
+## [Unreleased]
+
+### Fixed
+- **release:** Sign the ad-hoc bundle with an identifier-only requirement
+
+
+
+### Tests
+- **release:** Add a self-verification loop driven by real key events
+
+
+
 ## [0.1.3] - 2026-11-23
 
 ### Fixed
