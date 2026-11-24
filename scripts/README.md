@@ -10,7 +10,10 @@ scripts/
   licenses/    third-party notice generation
     generate-notices.sh  licenses/inventory.json + THIRD-PARTY-NOTICES
   release/     cutting releases
+  release/     cutting releases
     release.sh           pre-release gate: test + lint + changelog + tag hint
+    verify-installed.sh  install an app and prove keyboard hotkeys with real
+                         key events (CGEvent → TextEdit window frame asserts)
   ci/          CI parity helpers (run locally what CI runs)
     ci-local.sh          the whole pipeline: fmt + clippy + deny + test + bazel
 ```

@@ -95,7 +95,14 @@ case "$mode" in
         sign
         ;;
     bundle)
-        echo "bundle: bundle-only mode — shipping UNSIGNED dmg" >&2
+        # Ad-hoc sign with an EXPLICIT designated requirement anchored on the
+        # bundle identifier. Plain ad-hoc signing yields "cdhash …", a hash of
+        # the binary, so each release is a new identity to TCC and macOS drops
+        # the Accessibility grant: every hotkey then silently no-ops after an
+        # upgrade. `--identifier` alone does NOT change the requirement; -r does.
+        codesign --force --sign - --identifier "$bundle_id" \
+            -r="designated => identifier \"$bundle_id\"" "$app_dir"
+        echo "bundle: bundle-only mode — shipping ad-hoc signed dmg" >&2
         hdiutil create -volname "$app_name" -srcfolder "$app_dir" -ov -format UDZO \
             "$out/wnav-${version}-aarch64-apple-darwin.dmg"
         ;;

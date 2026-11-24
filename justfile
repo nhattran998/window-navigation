@@ -81,6 +81,19 @@ changelog:
 pre-release: test lint changelog
     @echo "review CHANGELOG.md, then: git tag vX.Y.Z && git push --tags"
 
+
+# Self-verify an installed Wnav.app with REAL keyboard events (macOS only).
+# Installs from a DMG (default: newest wnav-*.dmg in ~/Downloads), launches,
+# and drives a TextEdit window with ⌃⌥←/→/↑/↓/↵ plus the status menu, asserting
+# the resulting window frame. Needs Accessibility + Automation for the terminal.
+#
+#   just verify-installed                      # newest DMG
+#   just verify-installed --dmg ~/Downloads/wnav-0.1.4-aarch64-apple-darwin.dmg
+#   just verify-installed --loop 3             # repeat the whole cycle
+#   just verify-installed --no-install --process wnav-app   # a running dev build
+verify-installed *ARGS:
+    bash scripts/release/verify-installed.sh {{ARGS}}
+
 # ---- Vendoring --------------------------------------------------------
 
 # Refresh vendored gpui-* from crates.io (scripts/vendor-sync.sh).
